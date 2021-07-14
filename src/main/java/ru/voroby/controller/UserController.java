@@ -8,6 +8,8 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.json.stream.JsonCollectors;
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -19,8 +21,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
@@ -49,8 +49,8 @@ public class UserController {
     }
 
     @POST
-    public Response addUser(User dto) {
-        int id = userStore.addUser(dto);
+    public Response addUser(@Valid @NotNull User user) {
+        int id = userStore.addUser(user);
         URI uri = uriInfo.getBaseUriBuilder()
                 .path(UserController.class)
                 .path(UserController.class, "getUser")
