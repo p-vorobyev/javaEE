@@ -21,6 +21,7 @@
         <war-plugin.version>3.3.1</war-plugin.version>
         <!--dependencies-->
         <jakarta.version>8.0.0</jakarta.version>
+        <hibernate.version>5.5.3.Final</hibernate.version>
         <!--logging-->
         <logback.version>1.2.3</logback.version>
         <slf4j.version>1.7.30</slf4j.version>
@@ -30,6 +31,7 @@
         <jupiter.version>5.7.1</jupiter.version>
         <resteasy.version>3.15.1.Final</resteasy.version>
         <johnzon-jsonb.version>1.2.14</johnzon-jsonb.version>
+        <h2.version>1.4.200</h2.version>
     </properties>
 
     <dependencies>
@@ -39,6 +41,13 @@
             <artifactId>jakarta.jakartaee-api</artifactId>
             <version>${jakarta.version}</version>
             <scope>provided</scope>
+        </dependency>
+
+        <!--   Jpa   -->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+            <version>${hibernate.version}</version>
         </dependency>
 
         <!--   Dev-tools   -->
@@ -69,6 +78,12 @@
         </dependency>
 
         <!--   Test   -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <version>${h2.version}</version>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-engine</artifactId>

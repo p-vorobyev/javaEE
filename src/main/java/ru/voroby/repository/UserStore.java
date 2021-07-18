@@ -1,44 +1,44 @@
 package ru.voroby.repository;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.voroby.entity.User;
 
-import javax.enterprise.context.ApplicationScoped;
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
-@ApplicationScoped
+
+@Slf4j
+@Transactional
+@Stateless
 public class UserStore implements Serializable {
 
-    private final Map<Integer, User> users = new ConcurrentHashMap<>();
+    @PersistenceContext(unitName = "EE")
+    private EntityManager em;
 
-    private final AtomicInteger atomic = new AtomicInteger();
-
-    public int addUser(User dto) {
-        if (dto.getId() != null) {
-            users.put(dto.getId(), new User(dto.getId(), dto.getName(), dto.getAge()));
-            return dto.getId();
+    public int addUser(User user) {
+        if (user.getId() != null) {
+            em.merge(user);
+            log.info("User updated: [id: {}]", user.getId());
         } else {
-            var user = new User(atomic.incrementAndGet(), dto.getName(), dto.getAge());
-            users.put(user.getId(), user);
-            return user.getId();
+            em.persist(user);
+            log.info("User saved: [id: {}]", user.getId());
         }
+
+        return user.getId();
     }
 
     public Optional<User> getUser(int id) {
-        User user = users.get(id);
-        return user != null ?
-                Optional.of(new User(user.getId(), user.getName(), user.getAge())) :
-                Optional.empty();
+        User user = em.find(User.class, id);
+        return user != null ? Optional.of(user) : Optional.empty();
     }
 
     public List<User> getAllUsers() {
-        return users.values().stream()
-                .map(u -> new User(u.getId(), u.getName(), u.getAge()))
-                .toList();
+        return em.createNamedQuery(User.ALL, User.class).getResultList();
     }
 
 }

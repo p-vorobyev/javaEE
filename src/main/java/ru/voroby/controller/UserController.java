@@ -3,7 +3,7 @@ package ru.voroby.controller;
 import ru.voroby.entity.User;
 import ru.voroby.repository.UserStore;
 
-import javax.inject.Inject;
+import javax.ejb.EJB;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
@@ -27,7 +27,7 @@ import java.net.URI;
 @Consumes(MediaType.APPLICATION_JSON)
 public class UserController {
 
-    @Inject
+    @EJB
     private UserStore userStore;
 
     @Context
