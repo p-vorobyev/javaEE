@@ -32,6 +32,7 @@
         <resteasy.version>3.15.1.Final</resteasy.version>
         <johnzon-jsonb.version>1.2.14</johnzon-jsonb.version>
         <h2.version>1.4.200</h2.version>
+        <mockito.version>3.11.2</mockito.version>
     </properties>
 
     <dependencies>
@@ -94,6 +95,18 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>${jupiter.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>${mockito.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
