@@ -1,19 +1,36 @@
 package ru.voroby.controller;
 
-import com.github.tomakehurst.wiremock.junit.WireMockRule;
-import org.junit.Rule;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
+import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
+import org.apache.hc.client5.http.impl.classic.HttpClients;
+import org.apache.hc.core5.http.HttpEntity;
+import org.apache.hc.core5.http.message.BasicHeader;
+import org.junit.AfterClass;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.junit.MockitoJUnitRunner;
+import ru.voroby.entity.User;
 
-@RunWith(MockitoJUnitRunner.class)
-public class UserControllerTest {
+import java.io.IOException;
+import java.net.URISyntaxException;
 
-    @Rule
-    public WireMockRule wireMockRule = new WireMockRule(8089);
+import static org.apache.hc.core5.http.ContentType.APPLICATION_JSON;
+import static ru.voroby.controller.HttpUtils.post;
+
+public class UserControllerTest extends UserControllerAdapter {
+
+    static final CloseableHttpClient client = HttpClients.createDefault();
 
     @Test
-    public void addUser() {
+    public void addUser() throws URISyntaxException, IOException {
+        whenAddUser(new User());
+        try (CloseableHttpResponse execute = client.execute(post(URL, new BasicHeader("Content-Type", APPLICATION_JSON)))) {
+            HttpEntity entity = execute.getEntity();
+            String s = new String(entity.getContent().readAllBytes());
+            System.out.println(s);
+        }
+    }
 
+    @AfterClass
+    public static void cleanUp() throws IOException {
+        client.close();
     }
 }
