@@ -1,4 +1,4 @@
-package ru.voroby.controller;
+package ru.voroby.controller.utils;
 
 import org.apache.hc.core5.http.ClassicHttpRequest;
 import org.apache.hc.core5.http.io.support.ClassicRequestBuilder;
@@ -11,18 +11,23 @@ import java.util.Optional;
 
 public class HttpUtils {
 
-    static ClassicHttpRequest post(String url, String json, BasicHeader... headers) throws URISyntaxException {
-        URIBuilder uriBuilder = new URIBuilder(url);
-        ClassicHttpRequest request = ClassicRequestBuilder
+    public static ClassicHttpRequest post(String url, String json, BasicHeader... headers) throws URISyntaxException {
+        var uriBuilder = new URIBuilder(url);
+        var request = ClassicRequestBuilder
                 .post(uriBuilder.build())
                 .setEntity(Optional.ofNullable(json).orElse(""))
                 .build();
         List.of(headers).forEach(request::addHeader);
+
         return request;
     }
 
-    static ClassicHttpRequest post(String url, BasicHeader... headers) throws URISyntaxException {
+    public static ClassicHttpRequest post(String url, BasicHeader... headers) throws URISyntaxException {
         return post(url, null, headers);
+    }
+
+    public static ClassicHttpRequest get(String url) {
+        return ClassicRequestBuilder.get(url).build();
     }
 
 }

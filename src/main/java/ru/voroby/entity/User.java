@@ -1,6 +1,8 @@
 package ru.voroby.entity;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.Hibernate;
 import ru.voroby.validation.UserAgeValidation;
 
 import javax.persistence.Column;
@@ -15,7 +17,8 @@ import javax.persistence.Table;
 import javax.validation.Payload;
 import javax.validation.constraints.NotBlank;
 
-@Data
+@Getter
+@Setter
 @NamedQueries({
         @NamedQuery(name = User.BY_NAME, query = "select u from User u where u.name = :name"),
         @NamedQuery(name = User.ALL, query = "select u from User u")
@@ -51,5 +54,23 @@ public class User implements Payload {
         this.id = id;
         this.name = name;
         this.age = age;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || !getClass().equals(Hibernate.getClass(o))) {
+            return false;
+        }
+        User that = (User) o;
+
+        return id != null && id.equals(that.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return getClass().hashCode();
     }
 }
