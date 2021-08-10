@@ -9,6 +9,7 @@
     </appender>
 
     <logger name="org.hibernate.SQL" level="debug"/>
+    <logger name="ru.voroby.controller" level="debug"/>
 
     <root level="info">
         <appender-ref ref="console"/>
