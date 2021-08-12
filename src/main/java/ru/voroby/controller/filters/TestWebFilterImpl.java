@@ -1,4 +1,4 @@
-package ru.voroby.controller;
+package ru.voroby.controller.filters;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
 @Slf4j
-@WebFilter(urlPatterns = {"/*"})
-public class WebFilterImpl implements Filter {
+@WebFilter(urlPatterns = {"/api/test"})
+public class TestWebFilterImpl implements Filter {
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         Filter.super.init(filterConfig);
@@ -22,7 +22,7 @@ public class WebFilterImpl implements Filter {
 
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        log.debug("Filter chain check.");
+        log.debug("Test filter chain check.");
         if (request instanceof HttpServletRequest req) {
             log.debug("Context: [path: {}]", req.getRequestURI());
             chain.doFilter(request, response);

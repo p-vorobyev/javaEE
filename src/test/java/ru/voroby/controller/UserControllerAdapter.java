@@ -11,6 +11,7 @@ import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriBuilder;
 import javax.ws.rs.core.UriInfo;
 import java.io.StringReader;
@@ -36,6 +37,9 @@ public abstract class UserControllerAdapter extends WireMock {
     @Mock
     private UriInfo uriInfo;
 
+    @Mock
+    private SecurityContext securityContext;
+
     @InjectMocks
     private UserController controller;
 
@@ -57,6 +61,7 @@ public abstract class UserControllerAdapter extends WireMock {
         when(userStore.addUser(user)).thenReturn(sequence++);
         var uriBuilder = UriBuilder.fromPath(URL);
         when(uriInfo.getBaseUriBuilder()).thenReturn(uriBuilder);
+        when(securityContext.getUserPrincipal()).thenReturn(() -> "POST_TEST_USER");
         user.setId(sequence);
         inMem.put(user.getId(), user);
         Response response = controller.addUser(user);
@@ -72,6 +77,7 @@ public abstract class UserControllerAdapter extends WireMock {
     void whenGetUser(int id) {
         User u = inMem.get(id);
         when(userStore.getUser(id)).thenReturn(Optional.ofNullable(u));
+        when(securityContext.getUserPrincipal()).thenReturn(() -> "GET_TEST_USER");
         Response response = controller.getUser(id);
         stubFor(
                 get("/users/" + id)
@@ -86,6 +92,7 @@ public abstract class UserControllerAdapter extends WireMock {
 
     void whenGetUsers() {
         when(userStore.getAllUsers()).thenReturn(new ArrayList<>(inMem.values()));
+        when(securityContext.getUserPrincipal()).thenReturn(() -> "GET_TEST_USER");
         JsonArray users = controller.getUsers();
         stubFor(
                 get("/users")

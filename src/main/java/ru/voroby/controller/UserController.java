@@ -1,5 +1,6 @@
 package ru.voroby.controller;
 
+import lombok.extern.slf4j.Slf4j;
 import ru.voroby.entity.User;
 import ru.voroby.repository.UserStore;
 
@@ -19,9 +20,11 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.ws.rs.core.SecurityContext;
 import javax.ws.rs.core.UriInfo;
 import java.net.URI;
 
+@Slf4j
 @Path("/users")
 @Produces(MediaType.APPLICATION_JSON)
 @Consumes(MediaType.APPLICATION_JSON)
@@ -33,8 +36,12 @@ public class UserController {
     @Context
     UriInfo uriInfo;
 
+    @Context
+    SecurityContext securityContext;
+
     @GET
     public JsonArray getUsers() {
+        log.info("Endpoint getUsers() invoked: [username: {}]", getUsername());
         return userStore.getAllUsers().stream()
                 .map(this::buildUserJson)
                 .collect(JsonCollectors.toJsonArray());
@@ -43,6 +50,7 @@ public class UserController {
     @GET
     @Path("{id}")
     public Response getUser(@PathParam("id") Integer id) {
+        log.info("Endpoint getUser(id) invoked: [username: {}]", getUsername());
         return userStore.getUser(id)
                 .map(user -> Response.ok().entity(buildUserJson(user)).build())
                 .orElseGet(() -> Response.noContent().build());
@@ -50,6 +58,7 @@ public class UserController {
 
     @POST
     public Response addUser(@Valid @NotNull User user) {
+        log.info("Endpoint addUser(user) invoked: [username: {}]", getUsername());
         int id = userStore.addUser(user);
         URI uri = uriInfo.getBaseUriBuilder()
                 .path(UserController.class)
@@ -64,6 +73,10 @@ public class UserController {
                 .add("id", user.getId())
                 .add("name", user.getName())
                 .add("age", user.getAge()).build();
+    }
+
+    private String getUsername() {
+        return securityContext.getUserPrincipal().getName();
     }
 
 }
